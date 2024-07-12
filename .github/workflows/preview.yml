@@ -1,8 +1,8 @@
-name: Vercel Preview Deployment
+name: Deployment Preview
 
 on:
   push:
-    branches:
+    branches-ignore:
       - main
 
 jobs:
