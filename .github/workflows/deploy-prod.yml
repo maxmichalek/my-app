@@ -1,4 +1,4 @@
-name: Vercel Production Deployment
+name: Deployment Production
 
 on:
   workflow_dispatch:
