@@ -41,5 +41,3 @@ export default function Home() {
     </main>
   );
 }
-
-// some other changes ...
