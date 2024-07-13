@@ -1,3 +1,6 @@
+// .lintstagedrc.js
+// See https://nextjs.org/docs/basic-features/eslint#lint-staged for details
+
 const path = require('path')
 
 const buildEslintCommand = (filenames) =>
