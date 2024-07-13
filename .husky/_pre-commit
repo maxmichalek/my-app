@@ -1,3 +1,0 @@
-npx lint-staged
-npx type-check
-npx test:ci
