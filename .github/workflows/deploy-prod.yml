@@ -26,7 +26,7 @@ jobs:
         run: npm ci
 
       - name: Run Tests
-        run: npm test
+        run: npm test:ci
 
       - name: Install Vercel CLI Globally
         run: npm install --global vercel

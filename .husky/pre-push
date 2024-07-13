@@ -1,0 +1,7 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+npx type-check
+npx lint:all
+npx test:ci
+npx test:e2e
