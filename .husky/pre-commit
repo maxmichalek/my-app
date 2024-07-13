@@ -1,11 +1,4 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-npx lint-staged
-
-
-# npm run type-check
-# npm run test:ci
-# npm run lint:all
-# npm run test:ci
-# npm run test:e2e
+npx lint-staged --concurrent false
