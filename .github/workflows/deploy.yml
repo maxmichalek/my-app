@@ -1,0 +1,69 @@
+name: Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      vercel-env:
+        description: 'Vercel Environment'
+        required: true
+        default: 'preview'
+        type: string
+      github-env:
+        description: 'Github Environment'
+        required: true
+        default: 'preview'
+        type: string
+  workflow_call:
+    inputs:
+      vercel-env:
+        description: 'Vercel Environment'
+        required: true
+        default: 'preview'
+        type: string
+      github-env:
+        description: 'Github Environment'
+        required: true
+        default: 'preview'
+        type: string
+
+# Avoids running this workflow multiple times for the same PR
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}-${{ inputs.vercel-env }}-${{ inputs.github-env }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ inputs.github-env }}
+    steps:
+      - name: Avoid deploying to production using a non production env
+        if: inputs.vercel-env == 'production' && inputs.github-env != 'production'
+        run: |
+          echo "::error::Cannot deploy to production using a non prodcuction environment"
+          exit 1
+
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node Environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Sync Environment Config from Vercel
+        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Build Project using Vercel
+        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+
+      # How to set environment variables in Vercel?
+
+      - name: Deploy Prebuilt Project to Production
+        run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
+
+      # If possible get URL of deployed service and add as comment
