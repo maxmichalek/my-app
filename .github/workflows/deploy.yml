@@ -85,15 +85,14 @@ jobs:
           META_TAG: ${{ steps.hash_branch.outputs.digest }}-${{ github.run_number }}-${{ github.run_attempt}}
         run: |
           if [ "${{ inputs.vercel-env }}" == "production" ]; then
-            vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
+            output=$(vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }})
+            url=$(echo "$output" | grep 'Production:' | awk '{print $2}')
           else
-            vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }}
+            output=$(vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }})
+            url=$(echo "$output" | grep 'Preview:' | awk '{print $2}')
           fi
+          echo "$output"
 
-          # vercel ls --token=$VERCEL_TOKEN --meta base_hash=${{ env.META_TAG }} &> vercel-output
-          # url=$(cat vercel-output | grep http | awk '{print $2}')
-          # echo "New preview URL: $url"
-          # echo "META_TAG=$META_TAG"
-          # echo "VERCEL_URL=$url" >> "$GITHUB_OUTPUT"
+          echo "Deployed URL: $url"
 
       # If possible get URL of deployed service and add as comment
