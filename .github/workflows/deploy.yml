@@ -38,30 +38,32 @@ jobs:
       name: ${{ inputs.github-env }}
     steps:
       - name: Avoid deploying to production using a non production env
-        if: inputs.vercel-env == vars.AWS_EB_PRODUCTION_ENV && inputs.github-env != 'production'
+        if: inputs.vercel-env == 'production' && inputs.github-env != 'production'
         run: |
           echo "::error::Cannot deploy to production using a non prodcuction environment"
           exit 1
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          aws-access-key-id: ${{secrets.AWS_ACCESS_KEY_ID}}
-          aws-secret-access-key: ${{secrets.AWS_SECRET_ACCESS_KEY}}
-          aws-region: ${{ vars.AWS_REGION }}
-      - name: Checkout
-        uses: actions/checkout@v3
+
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
       - name: Setup Node Environment
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: lts/*
           cache: 'npm'
+
       - name: Install Dependencies
         run: npm ci
-      - name: Build App
-        run: npm run build
-      - uses: actions/cache@v3
-        with:
-          path: ~/.cache/pip
-          key: ${{runner.os}}-pip
-      - name: Install EB CLI
-        run: pip install awsebcli
+
+      - name: Sync Environment Config from Vercel
+        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Build Project using Vercel
+        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+
+      # How to set environment variables in Vercel?
+
+      - name: Deploy Prebuilt Project to Production
+        run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
+
+      # If possible get URL of deployed service and add as comment
