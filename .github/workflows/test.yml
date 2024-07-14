@@ -28,6 +28,9 @@ jobs:
       - name: Check for Type Errors
         run: npm run typecheck
 
+      - name: Sync Environment Config from Vercel
+        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+
       - name: Build Project using Vercel
         run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
 
