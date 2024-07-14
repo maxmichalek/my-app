@@ -38,7 +38,7 @@ jobs:
           path: .vercel/output
           # retention-days: 30
 
-      - uses: Run Unit Tests with Coverage Report
+      - name: Run Unit Tests with Coverage Report
         run: npm run test:coverage
 
       - name: Upload Unit Tests Coverage Report
