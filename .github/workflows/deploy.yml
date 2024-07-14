@@ -90,10 +90,10 @@ jobs:
             vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }}
           fi
 
-          vercel ls --token=$VERCEL_TOKEN --meta base_hash=${{ env.META_TAG }} &> vercel-output
-          url=$(cat vercel-output | grep http | awk '{print $2}')
-          echo "New preview URL: $url"
-          echo "META_TAG=$META_TAG"
-          echo "VERCEL_URL=$url" >> "$GITHUB_OUTPUT"
+          # vercel ls --token=$VERCEL_TOKEN --meta base_hash=${{ env.META_TAG }} &> vercel-output
+          # url=$(cat vercel-output | grep http | awk '{print $2}')
+          # echo "New preview URL: $url"
+          # echo "META_TAG=$META_TAG"
+          # echo "VERCEL_URL=$url" >> "$GITHUB_OUTPUT"
 
       # If possible get URL of deployed service and add as comment
