@@ -6,6 +6,7 @@ export default function Page() {
       <h1>Home</h1>
       <h2>{process.env.ENVIRONMENT}</h2>
       <h3>Some Chame!</h3>
+      <h3>Some Chame!</h3>
       <Link href="/about">About</Link>
     </div>
   );
