@@ -1,7 +1,7 @@
 name: Test
 
 on:
-  workfow_call:
+  workflow_call:
 
 jobs:
   test-and-build:
