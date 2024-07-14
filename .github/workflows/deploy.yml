@@ -46,6 +46,18 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      - name: Extract branch name
+        shell: bash
+        run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+        id: extract_branch
+
+      - name: Hash branch name
+        uses: pplanel/hash-calculator-action@v1.3.1
+        id: hash_branch
+        with:
+          input: ${{ steps.extract_branch.outputs.branch }}
+          method: MD5
+
       - name: Setup Node Environment
         uses: actions/setup-node@v4
         with:
@@ -63,7 +75,20 @@ jobs:
 
       # How to set environment variables in Vercel?
 
-      - name: Deploy Prebuilt Project to Production
-        run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
+      - name: Deploy Prebuilt Project
+        env:
+          META_TAG: ${{ steps.hash_branch.outputs.digest }}-${{ github.run_number }}-${{ github.run_attempt}}
+        run: |
+          if [ "${{ inputs.vercel-env }}" == "production" ]; then
+            vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
+          else
+            vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }}
+          fi
+
+          vercel ls --token=$VERCEL_TOKEN --meta base_hash=${{ env.META_TAG }} &> vercel-output
+          url=$(cat vercel-output | grep http | awk '{print $2}')
+          echo "New preview URL: $url"
+          echo "META_TAG=$META_TAG"
+          echo "VERCEL_URL=$url" >> "$GITHUB_OUTPUT"
 
       # If possible get URL of deployed service and add as comment
