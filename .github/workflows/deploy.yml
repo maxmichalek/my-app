@@ -36,7 +36,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: ${{ inputs.github-env }}
-      url: 'http://${{ steps.deploy.outputs.url }}'
+      url: ${{ steps.deploy.outputs.url }}
     steps:
       - name: Avoid deploying to production using a non production env
         if: inputs.vercel-env == 'production' && inputs.github-env != 'production'
@@ -93,12 +93,5 @@ jobs:
             url=$(vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }})
             # url=$(echo "$output" | grep 'Preview:' | awk '{print $2}')
           fi
-
-          echo "url=$url" >> $GITHUB_OUTPUT
-
-          echo "output:"
-          echo "$output"
-
-          echo "Deployed URL: $url"
 
       # If possible get URL of deployed service and add as comment
