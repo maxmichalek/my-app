@@ -96,8 +96,8 @@ jobs:
 
           echo "url=$url" >> $GITHUB_OUTPUT
 
-          # echo "output:"
-          # echo "$output"
+          echo "output:"
+          echo "$output"
 
           echo "Deployed URL: $url"
 
