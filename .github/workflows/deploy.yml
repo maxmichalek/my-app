@@ -36,7 +36,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: ${{ inputs.github-env }}
-      url: 'http://${{ steps.deploy.outputs.aws_env_cname }}'
+      url: 'http://${{ steps.deploy.outputs.url }}'
     steps:
       - name: Avoid deploying to production using a non production env
         if: inputs.vercel-env == 'production' && inputs.github-env != 'production'
@@ -99,6 +99,6 @@ jobs:
           # echo "output:"
           # echo "$output"
 
-          # echo "Deployed URL: $url"
+          echo "Deployed URL: $url"
 
       # If possible get URL of deployed service and add as comment
