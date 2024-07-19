@@ -36,6 +36,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: ${{ inputs.github-env }}
+      # The URL where the deployment is accessible, will be shown in the Summary section of the deployment
       url: ${{ steps.deploy.outputs.url }}
     steps:
       - name: Avoid deploying to production using a non production env
@@ -46,18 +47,6 @@ jobs:
 
       - name: Checkout Repository
         uses: actions/checkout@v4
-
-      - name: Extract branch name
-        shell: bash
-        run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
-        id: extract_branch
-
-      - name: Hash branch name
-        uses: pplanel/hash-calculator-action@v1.3.1
-        id: hash_branch
-        with:
-          input: ${{ steps.extract_branch.outputs.branch }}
-          method: MD5
 
       - name: Setup Node Environment
         uses: actions/setup-node@v4
@@ -93,5 +82,7 @@ jobs:
             url=$(vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }})
             # url=$(echo "$output" | grep 'Preview:' | awk '{print $2}')
           fi
+
+          echo "url=$url" >> $GITHUB_OUTPUT
 
       # If possible get URL of deployed service and add as comment
