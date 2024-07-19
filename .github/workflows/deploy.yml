@@ -91,6 +91,7 @@ jobs:
             output=$(vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }})
             url=$(echo "$output" | grep 'Preview:' | awk '{print $2}')
           fi
+          echo "output:"
           echo "$output"
 
           echo "Deployed URL: $url"
