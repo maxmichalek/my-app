@@ -87,11 +87,11 @@ jobs:
           META_TAG: ${{ steps.hash_branch.outputs.digest }}-${{ github.run_number }}-${{ github.run_attempt}}
         run: |
           if [ "${{ inputs.vercel-env }}" == "production" ]; then
-            output=$(vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }})
-            url=$(echo "$output" | grep 'Production:' | awk '{print $2}')
+            url=$(vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }})
+            # url=$(echo "$output" | grep 'Production:' | awk '{print $2}')
           else
-            output=$(vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }})
-            url=$(echo "$output" | grep 'Preview:' | awk '{print $2}')
+            url=$(vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }})
+            # url=$(echo "$output" | grep 'Preview:' | awk '{print $2}')
           fi
 
           echo "url=$url" >> $GITHUB_OUTPUT
