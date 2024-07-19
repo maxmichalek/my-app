@@ -99,6 +99,6 @@ jobs:
           # echo "output:"
           # echo "$output"
 
-          # echo "Deployed URL: $url"
+          echo "Deployed URL: $url"
 
       # If possible get URL of deployed service and add as comment
