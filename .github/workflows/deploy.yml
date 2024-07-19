@@ -36,6 +36,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: ${{ inputs.github-env }}
+      url: 'http://${{ steps.deploy.outputs.aws_env_cname }}'
     steps:
       - name: Avoid deploying to production using a non production env
         if: inputs.vercel-env == 'production' && inputs.github-env != 'production'
@@ -81,6 +82,7 @@ jobs:
       # How to set environment variables in Vercel?
 
       - name: Deploy Prebuilt Project
+        id: deploy
         env:
           META_TAG: ${{ steps.hash_branch.outputs.digest }}-${{ github.run_number }}-${{ github.run_attempt}}
         run: |
@@ -92,9 +94,11 @@ jobs:
             url=$(echo "$output" | grep 'Preview:' | awk '{print $2}')
           fi
 
-          echo "output:"
-          echo "$output"
+          echo "url=$url" >> $GITHUB_OUTPUT
 
-          echo "Deployed URL: $url"
+          # echo "output:"
+          # echo "$output"
+
+          # echo "Deployed URL: $url"
 
       # If possible get URL of deployed service and add as comment
