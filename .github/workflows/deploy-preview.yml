@@ -16,6 +16,10 @@ on:
 jobs:
   deploy-preview:
     runs-on: ubuntu-latest
+    environment:
+      name: ${{ inputs.github-env }}
+      # The URL where the deployment is accessible, will be shown in the Summary section of the deployment
+      url: ${{ steps.deploy.outputs.VERCEL_URL }}
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -53,7 +57,7 @@ jobs:
       # How to set environment variables in Vercel?
 
       - name: Deploy Project Artifacts to Vercel
-        id: vercel
+        id: deploy
         env:
           META_TAG: ${{ steps.hash_branch.outputs.digest }}-${{ github.run_number }}-${{ github.run_attempt}}
         run: |
