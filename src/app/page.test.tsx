@@ -5,6 +5,6 @@ import Page from './page';
 test('Page', () => {
   render(<Page />);
   expect(
-    screen.getByRole('heading', { level: 1, name: 'DEPLOY' })
+    screen.getByRole('heading', { level: 1, name: 'DEPLOY1' })
   ).toBeDefined();
 });
