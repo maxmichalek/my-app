@@ -71,6 +71,6 @@ jobs:
       - uses: mshick/add-pr-comment@v2
         with:
           message: |
-            Your build has completed!
+            Your build has been deployed!
 
             [Preview deployment](${{ steps.vercel.outputs.VERCEL_URL }})
