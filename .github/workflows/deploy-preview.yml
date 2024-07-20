@@ -11,10 +11,13 @@ permissions:
   pull-requests: write
 
 on:
-  pull_request:
-    types:
-      - opened
-      - synchronize
+  workflow_dispatch:
+
+# on:
+#   pull_request:
+#     types:
+#       - opened
+#       - synchronize
 
 jobs:
   deploy-preview:
