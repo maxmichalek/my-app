@@ -19,7 +19,7 @@ jobs:
     environment:
       name: ${{ inputs.github-env }}
       # The URL where the deployment is accessible, will be shown in the Summary section of the deployment
-      url: ${{ steps.deploy.outputs.VERCEL_URL }}
+      url: ${{ steps.deploy.outputs.url }}
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -67,11 +67,12 @@ jobs:
           url=$(cat vercel-output | grep http | awk '{print $2}')
           echo "New preview URL: $url"
           echo "META_TAG=$META_TAG"
-          echo "VERCEL_URL=$url" >> "$GITHUB_OUTPUT"
+
+          echo "url=$url" >> "$GITHUB_OUTPUT"
 
       - uses: mshick/add-pr-comment@v2
         with:
           message: |
             Your build has completed!
 
-            [Preview deployment](${{ steps.vercel.outputs.VERCEL_URL }})
+            [Preview deployment](${{ steps.vercel.outputs.url }})
