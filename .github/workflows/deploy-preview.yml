@@ -68,10 +68,9 @@ jobs:
           echo "New preview URL: $url"
           echo "META_TAG=$META_TAG"
 
+          echo "url"
+          echo "$url"
           echo "url=$url" >> $GITHUB_OUTPUT
-
-      - name: Post Deployment Summary
-        run: echo "Deployment URL: [${{ steps.deploy.outputs.url }}](${{ steps.deploy.outputs.url }})" >> $GITHUB_STEP_SUMMARY
 
       - uses: mshick/add-pr-comment@v2
         with:
