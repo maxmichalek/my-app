@@ -32,7 +32,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  deploy-preview:
+  deploy:
     runs-on: ubuntu-latest
     environment:
       name: ${{ inputs.github-env }}

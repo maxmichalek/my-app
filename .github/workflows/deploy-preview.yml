@@ -1,54 +1,35 @@
-name: Vercel Preview Deployment
-
-env:
-  VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-
-permissions:
-  contents: read
-  statuses: write
-  pull-requests: write
+name: Deploy Preview
 
 on:
   workflow_dispatch:
 
+# # Avoids running this workflow multiple times for the same PR
+# concurrency:
+#   group: ${{ github.workflow }}-${{ github.ref }}-${{ inputs.vercel-env }}-${{ inputs.github-env }}
+#   cancel-in-progress: true
+
 jobs:
-  deploy-preview:
+  deploy:
     runs-on: ubuntu-latest
     environment:
-      name: ${{ inputs.github-env }}
+      # Name of the GitHub environment that contains environment variables
+      name: preview
       # The URL where the deployment is accessible, will be shown in the Summary section of the deployment
       url: ${{ steps.deploy.outputs.url }}
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Extract branch name
-        shell: bash
-        run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
-        id: extract_branch
-
-      - name: Hash branch name
-        uses: pplanel/hash-calculator-action@v1.3.1
-        id: hash_branch
+      - name: Setup Node Environment
+        uses: actions/setup-node@v4
         with:
-          input: ${{ steps.extract_branch.outputs.branch }}
-          method: MD5
+          node-version: lts/*
+          cache: 'npm'
 
-      - name: Cache dependencies
-        uses: actions/cache@v2
-        id: cache-npm
-        with:
-          path: ~/.npm
-          key: npm-${{ hashFiles('package-lock.json') }}
-          restore-keys: npm-
+      - name: Install Dependencies
+        run: npm ci
 
-      - name: Install dependencies
-        if: ${{ steps.cache-npm.outputs.cache-hit != 'true' }}
-        run: npm ci --ignore-scripts
-
-      - name: Pull Vercel Environment Information
+      - name: Sync Environment Config from Vercel
         run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
 
       - name: Build Project using Vercel
@@ -56,25 +37,13 @@ jobs:
 
       # How to set environment variables in Vercel?
 
-      - name: Deploy Project Artifacts to Vercel
+      - name: Deploy Prebuilt Project
         id: deploy
         env:
-          META_TAG: ${{ steps.hash_branch.outputs.digest }}-${{ github.run_number }}-${{ github.run_attempt }}
+          META_TAG: ${{ steps.hash_branch.outputs.digest }}-${{ github.run_number }}-${{ github.run_attempt}}
         run: |
-          vercel deploy --prebuilt --archive=tgz --token=$VERCEL_TOKEN --meta base_hash=${{ env.META_TAG }}
+          url=$(vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }})
 
-          vercel ls --token=$VERCEL_TOKEN --meta base_hash=${{ env.META_TAG }} &> vercel-output
-          url=$(cat vercel-output | grep http | awk '{print $2}')
-          echo "New preview URL: $url"
-          echo "META_TAG=$META_TAG"
-
-          echo "url"
-          echo "$url"
           echo "url=$url" >> $GITHUB_OUTPUT
 
-      - uses: mshick/add-pr-comment@v2
-        with:
-          message: |
-            Your build has completed!
-
-            [Preview deployment](${{ steps.deploy.outputs.url }})
+      # If possible get URL of deployed service and add as comment
