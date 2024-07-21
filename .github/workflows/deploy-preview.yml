@@ -9,7 +9,7 @@ on:
 #   cancel-in-progress: true
 
 jobs:
-  deploy:
+  deploy-preview:
     runs-on: ubuntu-latest
     environment:
       # Name of the GitHub environment that contains environment variables
