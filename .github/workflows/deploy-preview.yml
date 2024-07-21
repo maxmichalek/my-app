@@ -16,10 +16,10 @@ on:
 jobs:
   deploy-preview:
     runs-on: ubuntu-latest
-    # environment:
-    #   name: ${{ inputs.github-env }}
-    #   # The URL where the deployment is accessible, will be shown in the Summary section of the deployment
-    #   url: ${{ steps.deploy.outputs.url }}
+    environment:
+      name: ${{ inputs.github-env }}
+      # The URL where the deployment is accessible, will be shown in the Summary section of the deployment
+      url: ${{ steps.deploy.outputs.url }}
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
