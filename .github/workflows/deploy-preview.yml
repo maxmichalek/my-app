@@ -17,12 +17,12 @@ jobs:
       # The URL where the deployment is accessible, will be shown in the Summary section of the deployment
       url: ${{ steps.deploy.outputs.url }}
     steps:
-      - name: Check if current branch is main
-        id: check_branch
-        run: |
-          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
-            echo "Please use preview deployments only on feature branches in order to automatically clean up the deployments when the PR is closed."
-            exit 1
+      # - name: Check if current branch is main
+      #   id: check_branch
+      #   run: |
+      #     if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+      #       echo "Please use preview deployments only on feature branches in order to automatically clean up the deployments when the PR is closed."
+      #       exit 1
 
       - name: Checkout Repository
         uses: actions/checkout@v4
