@@ -26,6 +26,7 @@ jobs:
           if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
             echo "Please use preview deployments only on feature branches in order to automatically clean up the deployments when the PR is closed."
             exit 1
+          fi
 
       - name: Checkout Repository
         uses: actions/checkout@v4
