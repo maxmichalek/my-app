@@ -57,8 +57,8 @@ jobs:
         env:
           META_TAG: ${{ steps.hash_branch.outputs.digest }}-${{ github.run_number }}-${{ github.run_attempt}}
         run: |
-          # TODO: check what --archive=tgz does in vercel deploy and if it should be used
-          url=$(vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }}) --meta base_hash=${{ env.META_TAG }}
+          # url=$(vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }}) --meta base_hash=${{ env.META_TAG }}
+          url=$(vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }})
 
           echo "url=$url" >> $GITHUB_OUTPUT
 
