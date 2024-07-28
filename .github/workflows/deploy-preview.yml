@@ -8,6 +8,9 @@ on:
 #   group: ${{ github.workflow }}-${{ github.ref }}-${{ inputs.vercel-env }}-${{ inputs.github-env }}
 #   cancel-in-progress: true
 
+env:
+  ENVIRONMENT: preview
+
 jobs:
   deploy-preview:
     runs-on: ubuntu-latest
@@ -30,7 +33,7 @@ jobs:
         run: npm ci
 
       - name: Sync Environment Config from Vercel
-        run: vercel pull --yes --environment=Preview --token=${{ secrets.VERCEL_TOKEN }}
+        run: vercel pull --yes --environment={{ $ENVIRONMENT }} --token=${{ secrets.VERCEL_TOKEN }}
 
       - name: Build Project using Vercel
         run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
