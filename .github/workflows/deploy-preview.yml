@@ -14,12 +14,16 @@ env:
 jobs:
   deploy-preview:
     runs-on: ubuntu-latest
-    environment:
-      # Name of the GitHub environment that contains environment variables
-      name: preview
       # The URL where the deployment is accessible, will be shown in the Summary section of the deployment
       url: ${{ steps.deploy.outputs.url }}
     steps:
+      - name: Check if current branch is main
+        id: check_branch
+        run: |
+          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            echo "Please use preview deployments only on feature branches in order to automatically clean up the deployments when the PR is closed."
+            exit 1
+
       - name: Checkout Repository
         uses: actions/checkout@v4
 
@@ -58,9 +62,6 @@ jobs:
           META_TAG: ${{ steps.hash_branch.outputs.digest }}-${{ github.run_number }}-${{ github.run_attempt}}
         run: |
           url=$(vercel deploy --prebuilt --archive=tgz --token=${{ secrets.VERCEL_TOKEN }} --meta base_hash=${{ env.META_TAG }})
-
-          # url=$(vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }}) --meta base_hash=${{ env.META_TAG }}
-          # url=$(vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }})
 
           echo "url=$url" >> $GITHUB_OUTPUT
 
